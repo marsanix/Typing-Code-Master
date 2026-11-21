@@ -2,8 +2,7 @@
 
 > Sebuah game typing berbasis browser di mana sintaks kode sungguhan jatuh dari layar — ketik secepat mungkin sebelum mereka menyentuh batas bawah!
 
-Project ini merupakan Capstone Project Program IBM Skillsbuild University Education Hacktiv8 x IBM untuk Uniuversitas Siber Asia
-
+Apliaksi game ini dibuat dengan konsep Vibe Coding menggunakan IBM Bob dan merupakan Capstone Project Program IBM Skillsbuild University Education Hacktiv8 x IBM untuk Uniuversitas Siber Asia.
 
 ---
 
@@ -44,6 +43,14 @@ Typing-Code-Master/
 7. Jaga agar score tidak turun ke bawah 0, atau **Game Over!**
 
 **Keyboard shortcut:** `Escape` untuk jeda / lanjut.
+
+---
+
+## 🚀 Screenshoot
+
+![Tux, Start to playing](/images/start.png "Tux")
+![Tux, Playing the game](/images/play.png "Tux")
+![Tux, Gameover](/images/gameover.png "Tux")
 
 ---
 
