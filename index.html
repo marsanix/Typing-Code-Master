@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Typing Code Master</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#0f172a',
+          },
+          fontFamily: {
+            mono: ['"JetBrains Mono"', '"Courier New"', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Custom styles (keyframes, glow, token classes) -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="h-full bg-slate-950 text-slate-200">
+
+  <!-- Miss Flash Overlay (fixed, full-screen) -->
+  <div id="miss-flash" aria-hidden="true"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCREEN: Profile & Session Selection
+  ════════════════════════════════════════════════════════════════ -->
+  <main id="screen-profile" class="screen active flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+      <div class="flex items-center gap-3">
+        <span class="text-emerald-400 text-xl font-bold glow-emerald">⌨</span>
+        <h1 class="text-lg font-bold tracking-wide text-slate-100">Typing <span class="text-emerald-400">Code</span> Master</h1>
+      </div>
+      <span class="text-xs text-slate-500">v1.0</span>
+    </header>
+
+    <div class="flex flex-col lg:flex-row flex-1 gap-6 p-6 max-w-5xl mx-auto w-full">
+
+      <!-- Left: Setup Panel -->
+      <section class="flex-1 flex flex-col gap-5" aria-label="Game Setup">
+
+        <!-- Username -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+          <label for="username-input" class="block text-sm font-semibold text-slate-300 mb-2">
+            👤 Player Name
+          </label>
+          <input
+            id="username-input"
+            type="text"
+            maxlength="20"
+            placeholder="Enter your username…"
+            autocomplete="off"
+            spellcheck="false"
+            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-slate-100 font-mono text-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 placeholder-slate-600 transition"
+          />
+        </div>
+
+        <!-- Language Selection -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+          <p class="text-sm font-semibold text-slate-300 mb-3">🖥 Choose Language</p>
+          <div id="lang-grid" class="grid grid-cols-4 gap-2.5" role="group" aria-label="Programming language selection">
+            <!-- Chips built by JS -->
+          </div>
+        </div>
+
+        <!-- Difficulty Selection -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+          <p class="text-sm font-semibold text-slate-300 mb-3">🎯 Choose Difficulty</p>
+          <div id="diff-grid" class="grid grid-cols-3 gap-3" role="group" aria-label="Difficulty selection">
+            <!-- Chips built by JS -->
+          </div>
+        </div>
+
+        <!-- Start Button -->
+        <button
+          id="btn-start"
+          type="button"
+          disabled
+          class="w-full py-3.5 rounded-xl font-bold text-sm bg-emerald-600 hover:bg-emerald-500 text-white transition duration-200"
+        >
+          🚀 Mulai Bermain
+        </button>
+
+      </section>
+
+      <!-- Right: Leaderboard -->
+      <aside class="w-full lg:w-72 flex flex-col gap-4" aria-label="Leaderboard">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col flex-1">
+          <h2 class="text-sm font-bold text-slate-300 mb-3 flex items-center gap-2">
+            🏆 <span>Leaderboard</span>
+            <span class="text-xs text-slate-500 font-normal ml-auto">Top 10</span>
+          </h2>
+          <div id="leaderboard-list" class="flex flex-col gap-2 overflow-y-auto max-h-96 pr-1">
+            <!-- Rows built by JS -->
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCREEN: Game
+  ════════════════════════════════════════════════════════════════ -->
+  <main id="screen-game" class="screen flex-col min-h-screen">
+
+    <!-- HUD Bar -->
+    <header class="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-4 py-2 bg-slate-900 border-b border-slate-800">
+      <!-- Player + Badges -->
+      <div class="flex items-center gap-2 mr-2">
+        <span class="text-xs text-slate-400">▶</span>
+        <span id="hud-name"      class="font-bold text-slate-200 text-sm truncate max-w-[100px]"></span>
+        <span id="hud-lang-badge" class="text-xs font-bold px-2 py-0.5 rounded"></span>
+        <span id="hud-diff-badge" class="text-xs font-bold px-2 py-0.5 rounded"></span>
+      </div>
+
+      <div class="flex items-center gap-4 flex-1 flex-wrap">
+        <!-- Level -->
+        <div class="flex flex-col items-center">
+          <span class="text-xs text-slate-500 leading-none">LEVEL</span>
+          <span id="hud-level" class="font-bold text-cyan-400 glow-cyan text-sm">Lv.1</span>
+        </div>
+        <!-- Combo -->
+        <div class="flex flex-col items-center">
+          <span class="text-xs text-slate-500 leading-none">COMBO</span>
+          <span id="hud-combo" class="font-bold text-amber-400 glow-amber text-sm">×0</span>
+        </div>
+        <!-- Hi-Score -->
+        <div class="flex flex-col items-center hidden sm:flex">
+          <span class="text-xs text-slate-500 leading-none">BEST</span>
+          <span id="hud-hiscore" class="font-bold text-slate-400 text-sm">0</span>
+        </div>
+        <!-- Score -->
+        <div class="flex flex-col items-center ml-auto">
+          <span class="text-xs text-slate-500 leading-none">SCORE</span>
+          <span id="hud-score" class="font-bold text-emerald-400 glow-emerald text-base">0</span>
+        </div>
+      </div>
+
+      <!-- Pause Button -->
+      <button
+        id="btn-pause"
+        type="button"
+        class="ml-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition"
+      >⏸ Pause</button>
+    </header>
+
+    <!-- Grace Period Banner -->
+    <div id="grace-banner" class="text-center text-xs py-1 bg-amber-900/40 text-amber-300 border-b border-amber-800/40 tracking-wide"></div>
+
+    <!-- Game Area (falling tokens) -->
+    <section
+      id="game-area"
+      class="flex-1 relative overflow-hidden"
+      style="min-height: 320px;"
+      aria-label="Game area where code tokens fall"
+    >
+      <!-- Tokens injected by JS -->
+    </section>
+
+    <!-- Input Bar -->
+    <footer class="bg-slate-900 border-t border-slate-800 px-4 py-3">
+      <div class="max-w-2xl mx-auto flex items-center gap-3">
+        <span class="text-slate-500 text-xs whitespace-nowrap hidden sm:block">Type here:</span>
+        <input
+          id="typing-input"
+          type="text"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          placeholder="Start typing to match falling code…"
+          class="flex-1 bg-slate-800 border-2 border-slate-700 rounded-lg px-4 py-2.5 text-slate-100 font-mono text-sm placeholder-slate-600"
+        />
+        <kbd class="hidden sm:block text-xs text-slate-500 bg-slate-800 px-2 py-1 rounded border border-slate-700">ESC=Pause</kbd>
+      </div>
+    </footer>
+
+    <!-- ── Pause Overlay ─────────────────────────────────────── -->
+    <div
+      id="pause-overlay"
+      class="absolute inset-0 bg-slate-950/80 flex-col items-center justify-center gap-6 z-50"
+      style="display:none"
+      role="dialog"
+      aria-label="Game paused"
+    >
+      <div class="text-center">
+        <p class="text-4xl mb-2">⏸</p>
+        <h2 class="text-2xl font-bold text-slate-100">Paused</h2>
+        <p class="text-slate-400 text-sm mt-1">Press <kbd class="bg-slate-700 px-1.5 py-0.5 rounded text-slate-200">ESC</kbd> to resume</p>
+      </div>
+      <button
+        type="button"
+        onclick="resumeGame()"
+        class="px-8 py-3 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition text-sm"
+      >▶ Resume</button>
+    </div>
+
+    <!-- ── Game Over Overlay ──────────────────────────────────── -->
+    <div
+      id="gameover-overlay"
+      class="absolute inset-0 bg-slate-950/90 flex-col items-center justify-center gap-5 z-50 px-4"
+      style="display:none"
+      role="dialog"
+      aria-label="Game over"
+    >
+      <div class="text-center">
+        <p class="text-5xl mb-3">💀</p>
+        <h2 class="text-2xl font-bold text-red-400">Game Over</h2>
+        <p class="text-slate-400 text-sm mt-1">The code overwhelmed you!</p>
+      </div>
+
+      <!-- Stats Card -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-xs flex flex-col gap-3">
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400 text-sm">Final Score</span>
+          <span id="go-score" class="text-2xl font-bold text-emerald-400 glow-emerald">0</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400 text-sm">Level Reached</span>
+          <span id="go-level" class="font-bold text-cyan-400">1</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400 text-sm">Best Combo</span>
+          <span id="go-combo" class="font-bold text-amber-400">×0</span>
+        </div>
+        <hr class="border-slate-700" />
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400 text-sm">Language</span>
+          <span id="go-lang" class="text-xs font-bold px-2 py-0.5 rounded"></span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400 text-sm">Difficulty</span>
+          <span id="go-diff" class="text-xs font-bold px-2 py-0.5 rounded"></span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex gap-3 w-full max-w-xs">
+        <button
+          id="btn-restart"
+          type="button"
+          class="flex-1 py-3 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition text-sm"
+        >🔄 Restart</button>
+        <button
+          id="btn-home"
+          type="button"
+          class="flex-1 py-3 rounded-xl font-bold bg-slate-700 hover:bg-slate-600 text-slate-200 transition text-sm"
+        >🏠 Home</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Scripts: syntax-bank MUST load before script.js ──── -->
+  <script src="syntax-bank.js"></script>
+  <script src="script.js"></script>
+
+</body>
+</html>
