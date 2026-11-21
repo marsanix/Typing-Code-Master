@@ -46,7 +46,9 @@ Typing-Code-Master/
 
 ---
 
-## 🚀 Screenshoot
+## 🚀 Screenshoot dan Demo
+
+Demo: [https://marsanix.github.io/Typing-Code-Master/](https://marsanix.github.io/Typing-Code-Master/)
 
 ![Tux, Start to playing](/images/start.png "Tux")
 ![Tux, Playing the game](/images/play.png "Tux")
